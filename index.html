@@ -300,8 +300,109 @@
       
         
           
-            <p>拿一个双11的Mobile页面来做案例，下面是案例的网址：</p>
+            <h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>曾几何时为了兼容IE低版本浏览器而头痛，以为到Mobile时代可以跟这些麻烦说拜拜。可没想到到了移动时代，为了处理各终端的适配而乱了手脚。对于混迹各社区的偶，时常发现大家拿手机淘宝的H5页面做讨论——<strong>手淘的H5页面是如何实现多终端的适配</strong>？</p>
+<p>下面拿一个双11的Mobile页面来做案例，下面是案例的网址：</p>
 <p>​        <a href="http://huodong.m.taobao.com/act/yibo.html" target="_blank" rel="noopener">http://huodong.m.taobao.com/act/yibo.html</a></p>
+<p>虽然H5的页面与PC的Web页面相比简单了不少，但让我们头痛的事情是要想尽办法让页面能适配众多不同的终端设备，其中手机淘宝需要适配的终端就很让人崩溃；</p>
+<h2 id="手淘团队适配协作模式"><a href="#手淘团队适配协作模式" class="headerlink" title="手淘团队适配协作模式"></a>手淘团队适配协作模式</h2><p>早期移动端开发，对于终端设备适配问题只属于Android系列，只不过很多设计师常常忽略Android适配问题，只出一套iOS平台设计稿。但随着iPhone6，iPhone6+的出现，从此终端适配问题不再是Android系列了，也从这个时候让移动端适配全面进入到“杂屏”时代。</p>
+<p><img src="C:\Users\studnet\Pictures\shipei.png" alt=""></p>
+<table>
+<thead>
+<tr>
+<th>整个手机淘宝设计师和前端开发的适配协作基本思路是：</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>-                   选择一种尺寸作为设计和开发基准</td>
+</tr>
+<tr>
+<td>-                   定义一套适配规则，自动适配剩下的两种尺寸(其实不仅这两种，你懂的)</td>
+</tr>
+<tr>
+<td>-                   特殊适配效果给出设计效果</td>
+</tr>
+</tbody>
+</table>
+<p><img src="C:\Users\Public\Pictures\Sample Pictures\fd.png" alt=""></p>
+<p>在手淘的设计师和前端开发协作过程中：<strong>手淘设计师常选择iPhone6作为基准设计尺寸，交付给前端的设计尺寸是按750px * 1334px为准(高度会随着内容多少而改变)。前端开发人员通过一套适配规则自动适配到其他的尺寸。</strong></p>
+<p>首先设计者给出的图是750px * 1600px，剩下的就是前端开发者的事情了，手机淘宝这么多年总结的一套前端适配方案——<strong>flexible方案</strong>。</p>
+<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>在介绍这个flexible之前，需要先了解几个概念</p>
+<table>
+<thead>
+<tr>
+<th>视窗 viewport</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>简单的理解，viewport是严格等于浏览器的窗口。在桌面浏览器中，viewport就是浏览器窗口的宽度高度。但在移动端设备上就有点复杂。</td>
+</tr>
+<tr>
+<td>移动端的viewport太窄，为了能更好为CSS布局服务，所以提供了两个viewport:虚拟的viewportvisualviewport和布局的viewportlayoutviewport。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>物理像素(physical pixel)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>物理像素又被称为设备像素，他是显示设备中一个最微小的物理部件。每个像素可以根据操作系统设置自己的颜色和亮度。正是这些设备像素的微小距离欺骗了我们肉眼看到的图像效果。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>设备独立像素(density-independent pixel)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备独立像素也称为密度无关像素，可以认为是计算机坐标系统中的一个点，这个点代表一个可以由程序使用的虚拟像素(比如说CSS像素)，然后由相关系统转换为物理像素。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>CSS像素</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CSS像素是一个抽像的单位，主要使用在浏览器上，用来精确度量Web页面上的内容。一般情况之下，CSS像素称为与设备无关的像素(device-independent pixel)，简称DIPs。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>屏幕密度</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>屏幕密度是指一个设备表面上存在的像素数量，它通常以每英寸有多少像素来计算(PPI)。</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th>设备像素比(device pixel ratio)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>设备像素比简称为dpr，其定义了物理像素和设备独立像素的对应关系。它的值可以按下面的公式计算得到：设备像素比 ＝ 物理像素 / 设备独立像素</td>
+</tr>
+</tbody>
+</table>
 
           
         
