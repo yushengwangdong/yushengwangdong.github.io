@@ -331,6 +331,12 @@
 <tr>
 <td>移动端的viewport太窄，为了能更好为CSS布局服务，所以提供了两个viewport:虚拟的viewportvisualviewport和布局的viewportlayoutviewport。</td>
 </tr>
+<tr>
+<td>移动设备上有2个viewport（为了方便讲解人为定义的），分别是layoutviewport和ideal viewport。</td>
+</tr>
+<tr>
+<td>移动设备浏览器会默认设置一个layout viewport，并且这个值会大于ideal viewport，那么我们也知道ideal viewport就是屏幕区域，layout viewport是我们布局网页的区域</td>
+</tr>
 </tbody>
 </table>
 <table>
@@ -393,6 +399,89 @@
 </tr>
 </tbody>
 </table>
+<table>
+<thead>
+<tr>
+<th></th>
+<th></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>在JavaScript中，可以通过<code>window.devicePixelRatio</code>获取到当前设备的dpr（设备像素比）。而在CSS中，可以通过<code>-webkit-device-pixel-ratio</code>，<code>-webkit-min-device-pixel-ratio</code>和 <code>-webkit-max-device-pixel-ratio</code>进行媒体查询，对不同dpr的设备，做一些样式适配(这里只针对webkit内核的浏览器和webview)。</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>dip或dp,（device independent pixels，设备独立像素）与屏幕密度有关。dip可以用来辅助区分视网膜设备还是非视网膜设备。</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<h2 id="图片适配"><a href="#图片适配" class="headerlink" title="图片适配"></a>图片适配</h2><p> 初步了解了这些概念之后，就会考虑到在移动端时代屏幕适配除了Layout之外，还要考虑到图片的适配，因为其直接影响到页面显示质量，对于如何实现图片适配</p>
+<p><img src="/2018/12/01/flexible/nangong.jpg" alt=""></p>
+<h4 id="meta标签"><a href="#meta标签" class="headerlink" title="meta标签"></a>meta标签</h4><p>   meta标签有很多种，但是这里着重说的是meta的viewpoint，我们需要的标签式这样的</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1&quot;&gt;</span><br></pre></td></tr></table></figure>
+<p>开发移动端最理想的结果是避免滚动条还有网页不会被浏览器默认缩放。</p>
+<p>initial-scale=1  控制的是网页的初始缩放值</p>
+<p>maximum-scale=1  控制的是网页的最大缩放值，两者都为1.0 ，就可以避免缩放</p>
+<h4 id="CSS单位rem"><a href="#CSS单位rem" class="headerlink" title="CSS单位rem"></a>CSS单位rem</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">font size of the root element.这是w3c对于rem的解释，简单点说就是根元素&lt;html&gt;的font-size</span><br></pre></td></tr></table></figure>
+<h3 id="前端实现方案"><a href="#前端实现方案" class="headerlink" title="前端实现方案"></a>前端实现方案</h3><p> 前面的一些基本概念了解之后，就要开始说实际解决方案了，在整个手淘团队，我们有一个名叫<a href="https://github.com/amfe/lib-flexible" target="_blank" rel="noopener"><code>lib-flexible</code></a>的库，而这个库就是用来解决H5页面终端适配的。</p>
+<h5 id="首先了解lib-flexible是什么"><a href="#首先了解lib-flexible是什么" class="headerlink" title="首先了解lib-flexible是什么"></a>首先了解lib-flexible是什么</h5><p><a href="https://github.com/amfe/lib-flexible" target="_blank" rel="noopener"><code>lib-flexible</code></a>是一个制作H5适配的开源库，可以<a href="https://github.com/amfe/lib-flexible/archive/master.zip" target="_blank" rel="noopener">点击这里</a>下载相关文件，获取需要的JavaScript和CSS文件。</p>
+<p>当然你可以直接使用阿里CDN：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>另外强烈建议对JS做<strong>内联处理</strong>，在所有资源加载之前执行这个JS。执行这个JS后，会在<code>&lt;html&gt;</code>元素上增加一个<code>data-dpr</code>属性，以及一个<code>font-size</code>样式。JS会根据不同的设备添加不同的<code>data-dpr</code>值，比如说<code>2</code>或者<code>3</code>，同时会给<code>html</code>加上对应的<code>font-size</code>的值，比如说<code>75px</code>。</p>
+<p><img src="/2018/12/01/flexible/dpr.png" alt=""></p>
+<p>如此一来，页面中的元素，都可以通过<code>rem</code>单位来设置。他们会根据<code>html</code>元素的<code>font-size</code>值做相应的计算，从而实现屏幕的适配效果。</p>
+<h5 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h5><ol>
+<li>如果你使用下载的js文件的话，就要引入</li>
+</ol>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;script src=&quot;build/flexible_css.debug.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;script src=&quot;build/flexible.debug.js&quot;&gt;&lt;/script&gt;</span><br></pre></td></tr></table></figure>
+<p>2.或者直接加载上面的那个cdn</p>
+<p>提一下，这里不建议在 引入lib-flexible之前手动设置<code>meta</code>来控制<code>dpr</code>，比如这样</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;meta name=&quot;flexible&quot; content=&quot;initial-dpr=2&quot; /&gt;</span><br></pre></td></tr></table></figure>
+<p>因为这里苹果不同的设备dpr可能是不一样的，所以不需要固定死，但是如果是安卓的就可以固定死，因为都是1，主要是安卓手机型号太多，真要给安卓设置dpr那简直会发疯，所以一般都是直接给安卓设置dpr为1。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">if (!dpr &amp;&amp; !scale) &#123;</span><br><span class="line">    var isAndroid = win.navigator.appVersion.match(/android/gi);</span><br><span class="line">    var isIPhone = win.navigator.appVersion.match(/iphone/gi);</span><br><span class="line">    var devicePixelRatio = win.devicePixelRatio;</span><br><span class="line">    if (isIPhone) &#123;</span><br><span class="line">        // iOS下，对于2和3的屏，用2倍的方案，其余的用1倍方案</span><br><span class="line">        if (devicePixelRatio &gt;= 3 &amp;&amp; (!dpr || dpr &gt;= 3)) &#123;                </span><br><span class="line">            dpr = 3;</span><br><span class="line">        &#125; else if (devicePixelRatio &gt;= 2 &amp;&amp; (!dpr || dpr &gt;= 2))&#123;</span><br><span class="line">            dpr = 2;</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            dpr = 1;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">        // 其他设备下，仍旧使用1倍的方案</span><br><span class="line">        dpr = 1;</span><br><span class="line">    &#125;</span><br><span class="line">    scale = 1 / dpr;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="flexible的实质"><a href="#flexible的实质" class="headerlink" title="flexible的实质"></a>flexible的实质</h4><p><code>flexible</code>实际上就是能过JS来动态改写<code>meta</code>标签，代码类似这样：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">var metaEl = doc.createElement(&apos;meta&apos;);</span><br><span class="line">var scale = isRetina ? 0.5:1;</span><br><span class="line">metaEl.setAttribute(&apos;name&apos;, &apos;viewport&apos;);</span><br><span class="line">metaEl.setAttribute(&apos;content&apos;, &apos;initial-scale=&apos; + scale + &apos;, maximum-scale=&apos; + scale + &apos;, minimum-scale=&apos; + scale + &apos;, user-scalable=no&apos;);</span><br><span class="line">if (docEl.firstElementChild) &#123;</span><br><span class="line">    document.documentElement.firstElementChild.appendChild(metaEl);</span><br><span class="line">&#125; else &#123;</span><br><span class="line">    var wrap = doc.createElement(&apos;div&apos;);</span><br><span class="line">    wrap.appendChild(metaEl);</span><br><span class="line">    documen.write(wrap.innerHTML);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>事实上他做了这几样事情：</p>
+<ul>
+<li><p>动态改写<code>&lt;meta&gt;</code>标签</p>
+</li>
+<li><p>给<code>&lt;html&gt;</code>元素添加<code>data-dpr</code>属性，并且动态改写<code>data-dpr</code>的值</p>
+</li>
+<li><p>给<code>&lt;html&gt;</code>元素添加<code>font-size</code>属性，并且动态改写<code>font-size</code>的值</p>
+<p>这个看上面的图</p>
+</li>
+</ul>
+<h2 id="案例实战"><a href="#案例实战" class="headerlink" title="案例实战"></a>案例实战</h2><p>了解Flexible相关的知识之后，咱们回到文章开头。我们的目标是制作一个适配各终端的H5页面。别的不多说，动手才能丰衣足食。</p>
+<h4 id="创建HTML模板"><a href="#创建HTML模板" class="headerlink" title="创建HTML模板"></a>创建HTML模板</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;en&quot;&gt;</span><br><span class="line">    &lt;head&gt;</span><br><span class="line">        &lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">        &lt;meta content=&quot;yes&quot; name=&quot;apple-mobile-web-app-capable&quot;&gt;</span><br><span class="line">        &lt;!--这个和下面那个是控制全屏--&gt;</span><br><span class="line">        &lt;meta content=&quot;yes&quot; name=&quot;apple-touch-fullscreen&quot;&gt;</span><br><span class="line">        &lt;!-- 不希望手机自动将网页中的电话号码和邮箱显示为点击的超链接--&gt;</span><br><span class="line">        &lt;meta content=&quot;telephone=no,email=no&quot; name=&quot;format-detection&quot;&gt;</span><br><span class="line">        &lt;script src=&quot;http://g.tbcdn.cn/mtb/lib-flexible/0.3.4/??flexible_css.js,flexible.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">        &lt;link rel=&quot;apple-touch-icon&quot; href=&quot;favicon.png&quot;&gt;</span><br><span class="line">        &lt;link rel=&quot;Shortcut Icon&quot; href=&quot;favicon.png&quot; type=&quot;image/x-icon&quot;&gt;</span><br><span class="line">        &lt;title&gt;再来一波&lt;/title&gt;</span><br><span class="line">    &lt;/head&gt;</span><br><span class="line">    &lt;body&gt;</span><br><span class="line">        &lt;!-- 页面结构写在这里 --&gt;</span><br><span class="line">    &lt;/body&gt;</span><br><span class="line">&lt;/html&gt;</span><br></pre></td></tr></table></figure>
+<p>这个时候可以根据设计的图需求，在HTML文档的<code>&lt;body&gt;&lt;/body&gt;</code>中添加对应的HTML结构，比如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&lt;div class=&quot;item-section&quot; data-repeat=&quot;sections&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;item-section_header&quot;&gt;</span><br><span class="line">        &lt;h2&gt;&lt;img src=&quot;&#123;brannerImag&#125;&quot; alt=&quot;&quot;&gt;&lt;/h2&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;ul&gt;</span><br><span class="line">        &lt;li data-repeat=&quot;items&quot; class=&quot;flag&quot; role=&quot;link&quot; href=&quot;&#123;itemLink&#125;&quot;&gt;</span><br><span class="line">            &lt;a class=&quot;figure flag-item&quot; href=&quot;&#123;itemLink&#125;&quot;&gt;</span><br><span class="line">                &lt;img src=&quot;&#123;imgSrc&#125;&quot; alt=&quot;&quot;&gt;</span><br><span class="line">            &lt;/a&gt;</span><br><span class="line">            &lt;div class=&quot;figcaption flag-item&quot;&gt;</span><br><span class="line">                &lt;div class=&quot;flag-title&quot;&gt;&lt;a href=&quot;&#123;itemLink&#125;&quot; title=&quot;&quot;&gt;&#123;poductName&#125;&lt;/a&gt;&lt;/div&gt;</span><br><span class="line">                &lt;div class=&quot;flag-price&quot;&gt;&lt;span&gt;双11价&lt;/span&gt;&lt;strong&gt;¥&#123;price&#125;&lt;/strong&gt;&lt;small&gt;(&#123;preferential&#125;)&lt;/small&gt;&lt;/div&gt;</span><br><span class="line">                &lt;div class=&quot;flag-type&quot;&gt;&#123;activityType&#125;&lt;/div&gt;</span><br><span class="line">                &lt;a class=&quot;flag-btn&quot; href=&quot;&#123;shopLink&#125;&quot;&gt;&#123;activeName&#125;&lt;/a&gt;</span><br><span class="line">            &lt;/div&gt;</span><br><span class="line">        &lt;/li&gt;</span><br><span class="line">    &lt;/ul&gt;</span><br><span class="line">&lt;/div&gt;</span><br></pre></td></tr></table></figure>
+<p>为了能更好的测试页面，给其配置一点假数据：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">//define data</span><br><span class="line">var pageData = &#123;</span><br><span class="line">    sections:[&#123;</span><br><span class="line">        &quot;brannerImag&quot;:&quot;http://xxx.cdn.com/B1PNLZKXXXXXaTXXXXXXXXXXXX-750-481.jpg&quot;,</span><br><span class="line">        items:[&#123;</span><br><span class="line">            &quot;itemLink&quot;: &quot;##&quot;,</span><br><span class="line">            &quot;imgSrc&quot;: &quot;https://placeimg.com/350/350/people/grayscale&quot;,</span><br><span class="line">            &quot;poductName&quot;:&quot;Carter&apos;s1年式灰色长袖连体衣包脚爬服全棉鲸鱼男婴儿童装115G093&quot;,</span><br><span class="line">            &quot;price&quot;: &quot;299.06&quot;,</span><br><span class="line">            &quot;preferential&quot;: &quot;满400减100&quot;,</span><br><span class="line">            &quot;activityType&quot;: &quot;1小时内热卖5885件&quot;,</span><br><span class="line">            &quot;shopLink&quot;:&quot;##&quot;,</span><br><span class="line">            &quot;activeName&quot;: &quot;马上抢！&quot;</span><br><span class="line">        &#125;</span><br><span class="line">            ....</span><br><span class="line">        &#125;]</span><br><span class="line">    &#125;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>接下来的工作就是美化工作了。在写具体样式之前，有几个点需要先了解一下。</p>
+<h5 id="第一个问题："><a href="#第一个问题：" class="headerlink" title="第一个问题："></a>第一个问题：</h5><p>设计师给我们的图是以px为单位的，我们要将px转化为rem，我们如何将这个转化为rem呢</p>
+<p>其实flexible已经做好了。</p>
+<p>目前Flexible会将视觉稿分成<strong><code>100份</code></strong>（主要为了以后能更好的兼容<code>vh</code>和<code>vw</code>），而每一份被称为一个单位<code>a</code>。同时<code>1rem</code>单位被认定为<code>10a</code>。针对我们这份视觉稿可以计算出：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">1a   = 7.5px</span><br><span class="line">1rem = 75px</span><br></pre></td></tr></table></figure>
+<p>那么我们这个示例的稿子就分成了<code>10a</code>，也就是整个宽度为<code>10rem</code>，<code>&lt;html&gt;</code>对应的<code>font-size</code>为<code>75px</code>，</p>
+<h5 id="第二个问题："><a href="#第二个问题：" class="headerlink" title="第二个问题："></a>第二个问题：</h5><p>我们需要将多少多少px转化为rem，这时候由于元素太多，一个一个就显得很麻烦，我们这时候就可以去下载一个插件，链接在这       <a href="https://github.com/flashlizi/cssrem" target="_blank" rel="noopener">https://github.com/flashlizi/cssrem</a></p>
+<p>第一步：我们先下载这个插件，然后打开sublime-&gt; Preferences -&gt; Browse Packages，这样我们就进入了package这个页面。这时候我们将解压好的文件夹放入里面。</p>
+<p><img src="/2018/12/01/flexible/chajian.png" alt=""></p>
+<p>然后重启sublime，之后打开的时候，我觉得就行了，里面的配置文件已经有数据了</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">&quot;px_to_rem&quot;:40,/*默认为40*/</span><br><span class="line">&quot;max_rem_fraction_length&quot;:6,/*默认值*/</span><br><span class="line">&quot;available_file_types&quot;：[&quot;.css&quot;, &quot;.less&quot;, &quot;.sass&quot;]/*默认值*/</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>然后保存，之后随便编写一个css文件，就可以边写边去替换px为rem。</p>
+<p><img src="/2018/12/01/flexible/xiaoguo.gif" alt=""></p>
+<p><img src="/2018/12/01/flexible/moren.png" alt=""></p>
+<p>如果想改默认的数据就去package里面打开之前放进去的文件夹，然后打开下面这个文件夹，然后修改</p>
+<p><img src="/2018/12/01/flexible/huitu.png" alt=""></p>
+<p>当然除了使用插件，还有其他方法，比如sass之类的，这里就不说了，不是很了解。</p>
+<h4 id="文本字号不建议使用rem"><a href="#文本字号不建议使用rem" class="headerlink" title="文本字号不建议使用rem"></a>文本字号不建议使用<code>rem</code></h4><p>前面大家都见证了如何使用<code>rem</code>来完成H5适配。那么文本又将如何处理适配。是不是也通过<code>rem</code>来做自动适配。</p>
+<p>显然，我们在iPhone3G和iPhone4的Retina屏下面，希望看到的文本字号是相同的。也就是说，我们<strong>不希望文本在Retina屏幕下变小</strong>，另外，我们<strong>希望在大屏手机上看到更多文本</strong>，以及，现在绝大多数的字体文件都自带一些点阵尺寸，通常是<code>16px</code>和<code>24px</code>，所以我们<strong>不希望出现13px和15px这样的奇葩尺寸</strong>。</p>
+<p>如此一来，就决定了在制作H5的页面中，<code>rem</code>并不适合用到段落文本上。所以在Flexible整个适配方案中，考虑文本还是使用<code>px</code>作为单位。只不过使用<code>[data-dpr]</code>属性来区分不同<code>dpr</code>下的文本字号大小。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">div &#123;</span><br><span class="line">    width: 1rem; </span><br><span class="line">    height: 0.4rem;</span><br><span class="line">    font-size: 12px; // 默认写上dpr为1的fontSize</span><br><span class="line">&#125;</span><br><span class="line">[data-dpr=&quot;2&quot;] div &#123;</span><br><span class="line">    font-size: 24px;</span><br><span class="line">&#125;</span><br><span class="line">[data-dpr=&quot;3&quot;] div &#123;</span><br><span class="line">    font-size: 36px;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 
           
         
