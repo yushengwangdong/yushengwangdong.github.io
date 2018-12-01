@@ -86,13 +86,13 @@
 <meta property="og:site_name" content="Hexo">
 <meta property="og:description" content="简介曾几何时为了兼容IE低版本浏览器而头痛，以为到Mobile时代可以跟这些麻烦说拜拜。可没想到到了移动时代，为了处理各终端的适配而乱了手脚。对于混迹各社区的偶，时常发现大家拿手机淘宝的H5页面做讨论——手淘的H5页面是如何实现多终端的适配？ 下面拿一个双11的Mobile页面来做案例，下面是案例的网址： ​        http://huodong.m.taobao.com/act/yibo.">
 <meta property="og:locale" content="default">
-<meta property="og:image" content="c:/Users/studnet/Pictures/shipei.png">
-<meta property="og:image" content="c:/Users/Public/Pictures/Sample%20Pictures/fd.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/30/我的世界/Users/studnet/Pictures/shipei.png">
+<meta property="og:image" content="http://yoursite.com/2018/11/30/我的世界/Users/Public/Pictures/Sample%20Pictures/fd.png">
 <meta property="og:updated_time" content="2018-11-30T13:46:19.381Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Flexible实现手淘H5页面的终端适配">
 <meta name="twitter:description" content="简介曾几何时为了兼容IE低版本浏览器而头痛，以为到Mobile时代可以跟这些麻烦说拜拜。可没想到到了移动时代，为了处理各终端的适配而乱了手脚。对于混迹各社区的偶，时常发现大家拿手机淘宝的H5页面做讨论——手淘的H5页面是如何实现多终端的适配？ 下面拿一个双11的Mobile页面来做案例，下面是案例的网址： ​        http://huodong.m.taobao.com/act/yibo.">
-<meta name="twitter:image" content="c:/Users/studnet/Pictures/shipei.png">
+<meta name="twitter:image" content="http://yoursite.com/2018/11/30/我的世界/Users/studnet/Pictures/shipei.png">
 
 
 
@@ -307,7 +307,7 @@
 <p>​        <a href="http://huodong.m.taobao.com/act/yibo.html" target="_blank" rel="noopener">http://huodong.m.taobao.com/act/yibo.html</a></p>
 <p>虽然H5的页面与PC的Web页面相比简单了不少，但让我们头痛的事情是要想尽办法让页面能适配众多不同的终端设备，其中手机淘宝需要适配的终端就很让人崩溃；</p>
 <h2 id="手淘团队适配协作模式"><a href="#手淘团队适配协作模式" class="headerlink" title="手淘团队适配协作模式"></a>手淘团队适配协作模式</h2><p>早期移动端开发，对于终端设备适配问题只属于Android系列，只不过很多设计师常常忽略Android适配问题，只出一套iOS平台设计稿。但随着iPhone6，iPhone6+的出现，从此终端适配问题不再是Android系列了，也从这个时候让移动端适配全面进入到“杂屏”时代。</p>
-<p><img src="C:\Users\studnet\Pictures\shipei.png" alt=""></p>
+<p><img src="/2018/11/30/我的世界/Users\studnet\Pictures\shipei.png" alt=""></p>
 <table>
 <thead>
 <tr>
@@ -326,7 +326,7 @@
 </tr>
 </tbody>
 </table>
-<p><img src="C:\Users\Public\Pictures\Sample Pictures\fd.png" alt=""></p>
+<p><img src="/2018/11/30/我的世界/Users\Public\Pictures\Sample Pictures\fd.png" alt=""></p>
 <p>在手淘的设计师和前端开发协作过程中：<strong>手淘设计师常选择iPhone6作为基准设计尺寸，交付给前端的设计尺寸是按750px * 1334px为准(高度会随着内容多少而改变)。前端开发人员通过一套适配规则自动适配到其他的尺寸。</strong></p>
 <p>首先设计者给出的图是750px * 1600px，剩下的就是前端开发者的事情了，手机淘宝这么多年总结的一套前端适配方案——<strong>flexible方案</strong>。</p>
 <h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p>在介绍这个flexible之前，需要先了解几个概念</p>
@@ -439,6 +439,10 @@
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2018/12/01/flexible/" rel="prev" title="flexible">
+                flexible <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -514,7 +518,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">posts</span>
                 </a>
               </div>
