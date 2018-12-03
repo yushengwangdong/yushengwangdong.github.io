@@ -402,20 +402,15 @@
 <table>
 <thead>
 <tr>
-<th></th>
-<th></th>
-<th></th>
+<th style="text-align:right"></th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>在JavaScript中，可以通过<code>window.devicePixelRatio</code>获取到当前设备的dpr（设备像素比）。而在CSS中，可以通过<code>-webkit-device-pixel-ratio</code>，<code>-webkit-min-device-pixel-ratio</code>和 <code>-webkit-max-device-pixel-ratio</code>进行媒体查询，对不同dpr的设备，做一些样式适配(这里只针对webkit内核的浏览器和webview)。</td>
-<td></td>
-<td></td>
+<td style="text-align:right">在JavaScript中，可以通过<code>window.devicePixelRatio</code>获取到当前设备的dpr（设备像素比）。而在CSS中，可以通过<code>-webkit-device-pixel-ratio</code>，<code>-webkit-min-device-pixel-ratio</code>和 <code>-webkit-max-device-pixel-ratio</code>进行媒体查询，对不同dpr的设备，做一些样式适配(这里只针对webkit内核的浏览器和webview)。</td>
 </tr>
 <tr>
-<td>dip或dp,（device independent pixels，设备独立像素）与屏幕密度有关。dip可以用来辅助区分视网膜设备还是非视网膜设备。</td>
-<td></td>
+<td style="text-align:right">dip或dp,（device independent pixels，设备独立像素）与屏幕密度有关。dip可以用来辅助区分视网膜设备还是非视网膜设备。</td>
 </tr>
 </tbody>
 </table>
@@ -450,6 +445,7 @@
 <li><p>动态改写<code>&lt;meta&gt;</code>标签</p>
 </li>
 <li><p>给<code>&lt;html&gt;</code>元素添加<code>data-dpr</code>属性，并且动态改写<code>data-dpr</code>的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">1 rem=document.documentElement.clientWidth*dpr/10;</span><br></pre></td></tr></table></figure>
 </li>
 <li><p>给<code>&lt;html&gt;</code>元素添加<code>font-size</code>属性，并且动态改写<code>font-size</code>的值</p>
 <p>这个看上面的图</p>
